@@ -1,6 +1,8 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
+
+from app.services.llm import generate_itinerary
 
 app = FastAPI(
     title="AI Travel Itinerary Planner",
@@ -39,11 +41,15 @@ def health_check():
 
 @app.post("/plan", response_model=PlanResponse)
 def generate_plan(request: PlanRequest):
-    # Stub — real LLM call replaces this in the next step
-    itinerary = (
-        f"[STUB] 5-day itinerary for {request.destination} "
-        f"({request.days} days, {request.budget} budget) coming soon."
-    )
+    try:
+        itinerary = generate_itinerary(
+            destination=request.destination,
+            days=request.days,
+            budget=request.budget,
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
     return PlanResponse(
         destination=request.destination,
         days=request.days,
