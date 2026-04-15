@@ -52,6 +52,31 @@
                 </div>
             </div>
 
+            <details class="advanced-options">
+                <summary>Advanced Options (+)</summary>
+                <div class="advanced-options-content">
+                    <div class="form-group">
+                        <label for="interests">Interests (Optional)</label>
+                        <input id="interests" type="text" placeholder="e.g. food, history, nightlife">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="diet">Dietary Needs</label>
+                            <input id="diet" type="text" placeholder="e.g. vegan, halal">
+                        </div>
+                        <div class="form-group">
+                            <label for="pace">Pace</label>
+                            <select id="pace">
+                                <option value="">Any pace</option>
+                                <option value="relaxed">Relaxed</option>
+                                <option value="moderate">Moderate</option>
+                                <option value="action-packed">Action-packed</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </details>
+
             <button id="submit-btn" type="submit">
                 <span id="btn-text">Generate Itinerary</span>
                 <span id="btn-loader" class="hidden">Generating…</span>
@@ -64,6 +89,15 @@
                 <span id="result-badge"></span>
             </div>
             <div id="itinerary-content"></div>
+            
+            <!-- Chat interaction phase -->
+            <div id="chat-section">
+                <div id="chat-history"></div>
+                <form id="chat-form">
+                    <input type="text" id="chat-input" placeholder="Want to tweak something? (e.g., 'Make it cheaper')" autocomplete="off" required>
+                    <button type="submit" id="chat-send">Refine</button>
+                </form>
+            </div>
         </section>
 
         <div id="error-msg" class="hidden error-box" role="alert"></div>
