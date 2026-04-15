@@ -1,8 +1,14 @@
+from pathlib import Path
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from app.services.llm import generate_itinerary
+
+# Resolve frontend directory relative to this file
+FRONTEND_DIR = Path(__file__).resolve().parent.parent.parent / "frontend"
 
 app = FastAPI(
     title="AI Travel Itinerary Planner",
@@ -32,7 +38,7 @@ class PlanResponse(BaseModel):
     itinerary: str
 
 
-# ---------- Routes ----------
+# ---------- API Routes ----------
 
 @app.get("/health")
 def health_check():
@@ -56,3 +62,8 @@ def generate_plan(request: PlanRequest):
         budget=request.budget,
         itinerary=itinerary,
     )
+
+
+# ---------- Static Frontend (must be last) ----------
+# html=True → serves index.html for any unmatched route (SPA behaviour)
+app.mount("/", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")

@@ -1,6 +1,6 @@
 "use strict";
 
-const API_BASE = "http://127.0.0.1:8000";
+const API_BASE = "";  // served by FastAPI — relative URL works on any host
 
 const form       = document.getElementById("plan-form");
 const btnText    = document.getElementById("btn-text");
