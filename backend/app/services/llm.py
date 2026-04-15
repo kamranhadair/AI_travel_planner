@@ -17,6 +17,8 @@ SYSTEM_PROMPT = (
 )
 
 
+from groq import Groq, APIError, APIConnectionError, RateLimitError
+
 def build_user_prompt(destination: str, days: int, budget: str) -> str:
     return (
         f"Plan a {days}-day trip to {destination} for a traveller with a "
@@ -25,13 +27,22 @@ def build_user_prompt(destination: str, days: int, budget: str) -> str:
 
 
 def generate_itinerary(destination: str, days: int, budget: str) -> str:
-    response = _client.chat.completions.create(
-        model=MODEL,
-        messages=[
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": build_user_prompt(destination, days, budget)},
-        ],
-        temperature=0.7,
-        max_tokens=1024,
-    )
-    return response.choices[0].message.content
+    try:
+        response = _client.chat.completions.create(
+            model=MODEL,
+            messages=[
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": build_user_prompt(destination, days, budget)},
+            ],
+            temperature=0.7,
+            max_tokens=1024,
+        )
+        return response.choices[0].message.content
+    except RateLimitError:
+        raise ValueError("AI Service is currently overloaded. Please try again in a few minutes.")
+    except APIConnectionError:
+        raise ValueError("Failed to connect to AI service. Please check your network or try again.")
+    except APIError as e:
+        raise ValueError(f"AI Service error: {e.message}")
+    except Exception as e:
+        raise ValueError("An unexpected error occurred while generating the itinerary.")

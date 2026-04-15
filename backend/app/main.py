@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Literal
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -28,7 +29,7 @@ app.add_middleware(
 class PlanRequest(BaseModel):
     destination: str = Field(..., min_length=2, example="Paris")
     days: int = Field(..., ge=1, le=30, example=5)
-    budget: str = Field(..., example="moderate")  # low | moderate | high
+    budget: Literal["low", "moderate", "high"] = Field(..., example="moderate")
 
 
 class PlanResponse(BaseModel):

@@ -58,6 +58,13 @@ form.addEventListener("submit", async (e) => {
 
         if (!response.ok) {
             const err = await response.json().catch(() => ({}));
+            
+            // Handle FastAPI validation errors (422) cleanly
+            if (response.status === 422 && Array.isArray(err.detail)) {
+                const messages = err.detail.map(e => `${e.loc.join('.')}: ${e.msg}`);
+                throw new Error(messages.join('\n'));
+            }
+            // Handle HTTPExceptions or other string details
             throw new Error(err.detail ?? `Server error (${response.status})`);
         }
 
