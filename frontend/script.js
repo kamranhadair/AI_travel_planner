@@ -24,11 +24,11 @@ function showError(message) {
     result.classList.add("hidden");
 }
 
-function showResult(data) {
+function prepareResultUI(destination, days, budget) {
     const budgetLabel = { low: "🪙 Low Budget", moderate: "💳 Moderate Budget", high: "💎 High Budget" };
-    resultTitle.textContent = `${data.destination} · ${data.days} Days`;
-    resultBadge.textContent = budgetLabel[data.budget] ?? data.budget;
-    itineraryContent.textContent = data.itinerary;
+    resultTitle.textContent = `${destination} · ${days} Days`;
+    resultBadge.textContent = budgetLabel[budget] ?? budget;
+    itineraryContent.textContent = ""; // Clear existing content
     result.classList.remove("hidden");
     errorMsg.classList.add("hidden");
     result.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -48,6 +48,7 @@ form.addEventListener("submit", async (e) => {
 
     setLoading(true);
     errorMsg.classList.add("hidden");
+    result.classList.add("hidden");
 
     try {
         const response = await fetch(`${API_BASE}/plan`, {
@@ -68,8 +69,21 @@ form.addEventListener("submit", async (e) => {
             throw new Error(err.detail ?? `Server error (${response.status})`);
         }
 
-        const data = await response.json();
-        showResult(data);
+        // Setup UI for incoming stream
+        prepareResultUI(destination, days, budget);
+
+        // Read stream
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder("utf-8");
+
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            
+            const chunk = decoder.decode(value, { stream: true });
+            itineraryContent.textContent += chunk;
+        }
+        
     } catch (err) {
         showError(err.message || "Something went wrong. Is the backend running?");
     } finally {

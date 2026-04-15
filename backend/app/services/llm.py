@@ -26,7 +26,7 @@ def build_user_prompt(destination: str, days: int, budget: str) -> str:
     )
 
 
-def generate_itinerary(destination: str, days: int, budget: str) -> str:
+def generate_itinerary_stream(destination: str, days: int, budget: str):
     try:
         response = _client.chat.completions.create(
             model=MODEL,
@@ -36,13 +36,17 @@ def generate_itinerary(destination: str, days: int, budget: str) -> str:
             ],
             temperature=0.7,
             max_tokens=1024,
+            stream=True,  # Enable streaming
         )
-        return response.choices[0].message.content
+        for chunk in response:
+            delta = chunk.choices[0].delta.content
+            if delta is not None:
+                yield delta
     except RateLimitError:
-        raise ValueError("AI Service is currently overloaded. Please try again in a few minutes.")
+        yield "Error: AI Service is currently overloaded. Please try again in a few minutes."
     except APIConnectionError:
-        raise ValueError("Failed to connect to AI service. Please check your network or try again.")
+        yield "Error: Failed to connect to AI service. Please check your network or try again."
     except APIError as e:
-        raise ValueError(f"AI Service error: {e.message}")
+        yield f"Error: AI Service error: {e.message}"
     except Exception as e:
-        raise ValueError("An unexpected error occurred while generating the itinerary.")
+        yield "Error: An unexpected error occurred while generating the itinerary."
