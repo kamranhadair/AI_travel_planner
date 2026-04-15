@@ -4,16 +4,72 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Travel Planner</title>
+    <meta name="description" content="Generate a personalised day-by-day travel itinerary powered by AI. Enter your destination, trip length, and budget to get started.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
+        <div class="header-icon">✈️</div>
         <h1>AI Travel Planner</h1>
-        <p>Plan your next adventure with AI</p>
+        <p>Get a personalised day-by-day itinerary in seconds</p>
     </header>
+
     <main id="app">
-        <!-- Components will be added here incrementally -->
+        <form id="plan-form" novalidate>
+            <div class="form-group">
+                <label for="destination">Destination</label>
+                <input
+                    id="destination"
+                    type="text"
+                    placeholder="e.g. Tokyo, Paris, Bali…"
+                    autocomplete="off"
+                    required
+                />
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="days">Duration (days)</label>
+                    <input
+                        id="days"
+                        type="number"
+                        min="1"
+                        max="30"
+                        value="5"
+                        required
+                    />
+                </div>
+
+                <div class="form-group">
+                    <label for="budget">Budget</label>
+                    <select id="budget">
+                        <option value="low">🪙 Low</option>
+                        <option value="moderate" selected>💳 Moderate</option>
+                        <option value="high">💎 High</option>
+                    </select>
+                </div>
+            </div>
+
+            <button id="submit-btn" type="submit">
+                <span id="btn-text">Generate Itinerary</span>
+                <span id="btn-loader" class="hidden">Generating…</span>
+            </button>
+        </form>
+
+        <section id="result" class="hidden" aria-live="polite">
+            <div class="result-header">
+                <h2 id="result-title"></h2>
+                <span id="result-badge"></span>
+            </div>
+            <div id="itinerary-content"></div>
+        </section>
+
+        <div id="error-msg" class="hidden error-box" role="alert"></div>
     </main>
+
     <script src="script.js"></script>
 </body>
 </html>
+
