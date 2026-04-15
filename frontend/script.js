@@ -75,13 +75,16 @@ form.addEventListener("submit", async (e) => {
         // Read stream
         const reader = response.body.getReader();
         const decoder = new TextDecoder("utf-8");
+        let fullText = "";
 
         while (true) {
             const { done, value } = await reader.read();
             if (done) break;
             
             const chunk = decoder.decode(value, { stream: true });
-            itineraryContent.textContent += chunk;
+            fullText += chunk;
+            // Parse Markdown and render as HTML
+            itineraryContent.innerHTML = marked.parse(fullText);
         }
         
     } catch (err) {

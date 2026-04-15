@@ -187,10 +187,36 @@ select option { background: #1e293b; }
 }
 
 #itinerary-content {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     color: var(--text);
-    white-space: pre-wrap;
     line-height: 1.8;
+}
+
+#itinerary-content h1,
+#itinerary-content h2,
+#itinerary-content h3 {
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: #fff;
+    font-weight: 600;
+}
+
+#itinerary-content p {
+    margin-bottom: 1rem;
+}
+
+#itinerary-content ul,
+#itinerary-content ol {
+    margin-left: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+#itinerary-content li {
+    margin-bottom: 0.4rem;
+}
+
+#itinerary-content strong {
+    color: var(--accent-h);
 }
 
 /* ── Error ── */
